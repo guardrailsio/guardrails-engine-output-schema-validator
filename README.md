@@ -33,7 +33,7 @@ issue  ✅
 
 In some cases you will run into validation errors. Those look like this:
 
-```json
+```js
 { ValidationError: child "rule" fails because ["rule" must be a string]
     at Object.exports.process (/Users/at/src/github.com/guardrailsio/guardrails-engine-output-schema-validator/node_modules/joi/lib/errors.js:196:19)
     at internals.Object._validateWithOptions (/Users/at/src/github.com/guardrailsio/guardrails-engine-output-schema-validator/node_modules/joi/lib/types/any/index.js:675:31)

@@ -6,6 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "preferGlobal": true,
+  "bin": "bin/validator",
   "author": "",
   "license": "ISC",
   "dependencies": {

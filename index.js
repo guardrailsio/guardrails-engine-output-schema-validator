@@ -2,11 +2,16 @@ const Joi = require('joi');
 const program = require('commander');
 const fs = require('fs');
 
+const pkg = require('./package.json');
+
+/* arguments parsing */
 program
-  .option('-s, --stdin', 'Read from stdin')
+  .version(pkg.version)
   .option('-f, --file [filePath]', 'Read from file')
+  .option('-s, --stdin', 'Read from stdin')
   .parse(process.argv);
 
+/* schemas */
 const processSchema = Joi.object().keys({
   name: Joi.string().required(),
   version: Joi.string().required()
@@ -70,7 +75,7 @@ const baseSchema = Joi.object().keys({
   output: Joi.array().required()
 });
 
-let reportData = { output: [] };
+/* data loading */
 
 function readFromStdin() {
   return readFromFile('/dev/stdin');
@@ -85,6 +90,7 @@ function readFromFile(filePath) {
     process.exit(1);
   }
 }
+let reportData;
 
 if (program.stdin) {
   reportData = readFromStdin();
@@ -92,7 +98,13 @@ if (program.stdin) {
   reportData = readFromFile(program.file);
 }
 
-// ========== Validate Outer structure:
+if (!reportData) {
+  console.log('No data was supplied to validate. Run `-h` for help.');
+  process.exit(1);
+}
+
+/* validating the envelope structure */
+
 Joi.validate(reportData, baseSchema, (err, value) => {
   if (err) {
     console.log(err);
@@ -101,6 +113,7 @@ Joi.validate(reportData, baseSchema, (err, value) => {
   }
 });
 
+/* validating the line items */
 reportData.output.forEach(lineItem => {
   let schema = Joi.object();
   if (lineItem.type === 'issue' || lineItem.type === 'sourcecode') {

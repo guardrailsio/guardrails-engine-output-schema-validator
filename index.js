@@ -1,62 +1,12 @@
-const Joi = require("joi");
+const Joi = require('joi');
+const program = require('commander');
+const fs = require('fs');
 
-let data = {
-  engine: {
-    name: "guardrails-engine-javascript",
-    version: "1.11.0"
-  },
-  language: "javascript",
-  type: "mixed",
-  status: "success",
-  executionTime: 3,
-  issues: 12,
-  errors: null,
-  output: [
-    {
-      type: "issue",
-      process: {
-        name: "eslint",
-        version: "^4.19.1"
-      },
-      rule: "@guardrails/guardrails/detect-unsafe-regex",
-      description: "[GR:0001:stable] Unsafe Regular Expression",
-      location: {
-        path: "/src/GR0001.js",
-        positions: {
-          begin: {
-            line: 8,
-            column: 19
-          },
-          end: {
-            line: 8,
-            column: 19
-          }
-        }
-      }
-    },
-    {
-      id: 566,
-      updated_at: "2018-05-08T14:27:01.549Z",
-      created_at: "2018-02-15T16:45:53.321Z",
-      publish_date: "2018-02-15T16:59:37.240Z",
-      recommendation: "Update to version 4.2.1, 5.0.3 or later.",
-      cvss_vector: "CVSS:3.0/AV:L/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
-      cvss_score: 4,
-      module: "hoek",
-      version: "5.0.0",
-      vulnerable_versions: "<= 4.2.0 || >= 5.0.0 < 5.0.3",
-      patched_versions: "> 4.2.0 < 5.0.0 || >= 5.0.3",
-      title: "Prototype pollution attack",
-      path: ["guardrails-test-javascript@1.0.0", "hoek@5.0.0"],
-      advisory: "https://nodesecurity.io/advisories/566",
-      type: "advisory",
-      process: {
-        name: "nsp",
-        version: "^3.2.1"
-      }
-    }
-  ]
-};
+program
+  .option('-s, --stdin', 'Read from stdin')
+  .option('-f, --file [filePath]', 'Read from file')
+  .parse(process.argv);
+
 const processSchema = Joi.object().keys({
   name: Joi.string().required(),
   version: Joi.string().required()
@@ -108,11 +58,11 @@ const baseSchema = Joi.object().keys({
     })
     .required(),
   language: Joi.string()
-    .valid("javascript", "python", "mixed")
+    .valid('javascript', 'python', 'mixed')
     .required(),
   type: Joi.string().required(),
   status: Joi.string()
-    .valid("success", "failure")
+    .valid('success', 'failure')
     .required(),
   executionTime: Joi.number().required(),
   issues: Joi.number().required(),
@@ -120,28 +70,50 @@ const baseSchema = Joi.object().keys({
   output: Joi.array().required()
 });
 
+let reportData = { output: [] };
+
+function readFromStdin() {
+  return readFromFile('/dev/stdin');
+}
+
+function readFromFile(filePath) {
+  try {
+    let data = fs.readFileSync(filePath).toString();
+    return JSON.parse(data);
+  } catch (err) {
+    console.log(err.message);
+    process.exit(1);
+  }
+}
+
+if (program.stdin) {
+  reportData = readFromStdin();
+} else if (program.file) {
+  reportData = readFromFile(program.file);
+}
+
 // ========== Validate Outer structure:
-Joi.validate(data, baseSchema, (err, value) => {
+Joi.validate(reportData, baseSchema, (err, value) => {
   if (err) {
     console.log(err);
   } else {
-    console.log("------------------> No Error outer");
+    console.log('envelope  ✅');
   }
 });
 
-// ========== Validate Output
-Joi.validate(data.output[0], sourceCodeSchema, (err, value) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("------------------> No Error code");
+reportData.output.forEach(lineItem => {
+  let schema = Joi.object();
+  if (lineItem.type === 'issue' || lineItem.type === 'sourcecode') {
+    schema = sourceCodeSchema;
+  } else if (lineItem.type === 'advisory') {
+    schema = dependenciesSchema;
+  } else if (lineItem.type === 'secrets') {
   }
-});
-
-Joi.validate(data.output[1], dependenciesSchema, (err, value) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("------------------> No Error");
-  }
+  Joi.validate(lineItem, schema, (err, value) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(lineItem.type + '  ✅');
+    }
+  });
 });

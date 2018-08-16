@@ -1,0 +1,15 @@
+{
+  "name": "guardrails-engine-output-schema-validator",
+  "version": "1.0.0",
+  "description": "validate the output of engines",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.17.1",
+    "joi": "^13.6.0"
+  }
+}

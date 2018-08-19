@@ -63,7 +63,7 @@ const baseSchema = Joi.object().keys({
     })
     .required(),
   language: Joi.string()
-    .valid('javascript', 'python', 'mixed')
+    .valid('javascript', 'python', 'ruby', 'mixed')
     .required(),
   type: Joi.string().required(),
   status: Joi.string()

@@ -1,14 +1,14 @@
-const Joi = require('joi');
-const program = require('commander');
-const fs = require('fs');
+const Joi = require("joi");
+const program = require("commander");
+const fs = require("fs");
 
-const pkg = require('./package.json');
+const pkg = require("./package.json");
 
 /* arguments parsing */
 program
   .version(pkg.version)
-  .option('-f, --file [filePath]', 'Read from file')
-  .option('-s, --stdin', 'Read from stdin')
+  .option("-f, --file [filePath]", "Read from file")
+  .option("-s, --stdin", "Read from stdin")
   .parse(process.argv);
 
 /* schemas */
@@ -63,22 +63,23 @@ const baseSchema = Joi.object().keys({
     })
     .required(),
   language: Joi.string()
-    .valid('javascript', 'python', 'ruby', 'mixed')
+    .valid("javascript", "python", "ruby", "mixed")
     .required(),
   type: Joi.string().required(),
   status: Joi.string()
-    .valid('success', 'failure')
+    .valid("success", "failure")
     .required(),
   executionTime: Joi.number().required(),
   issues: Joi.number().required(),
   errors: [Joi.array(), null],
-  output: Joi.array().required()
+  output: Joi.array().required(),
+  rawOutput: Joi.string().required()
 });
 
 /* data loading */
 
 function readFromStdin() {
-  return readFromFile('/dev/stdin');
+  return readFromFile("/dev/stdin");
 }
 
 function readFromFile(filePath) {
@@ -99,7 +100,7 @@ if (program.stdin) {
 }
 
 if (!reportData) {
-  console.log('No data was supplied to validate. Run `-h` for help.');
+  console.log("No data was supplied to validate. Run `-h` for help.");
   process.exit(1);
 }
 
@@ -109,24 +110,24 @@ Joi.validate(reportData, baseSchema, (err, value) => {
   if (err) {
     console.log(err);
   } else {
-    console.log('envelope  ✅');
+    console.log("envelope  ✅");
   }
 });
 
 /* validating the line items */
 reportData.output.forEach(lineItem => {
   let schema = Joi.object();
-  if (lineItem.type === 'issue' || lineItem.type === 'sourcecode') {
+  if (lineItem.type === "issue" || lineItem.type === "sourcecode") {
     schema = sourceCodeSchema;
-  } else if (lineItem.type === 'advisory') {
+  } else if (lineItem.type === "advisory") {
     schema = dependenciesSchema;
-  } else if (lineItem.type === 'secrets') {
+  } else if (lineItem.type === "secrets") {
   }
   Joi.validate(lineItem, schema, (err, value) => {
     if (err) {
       console.log(err);
     } else {
-      console.log(lineItem.type + '  ✅');
+      console.log(lineItem.type + "  ✅");
     }
   });
 });

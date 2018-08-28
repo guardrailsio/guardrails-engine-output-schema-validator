@@ -36,7 +36,9 @@ const sourceCodeSchema = Joi.object()
     description: Joi.string().required(),
     // cvss_score: Joi.number().required(),
     location: Joi.object().keys({
-      path: Joi.string().required(),
+      path: Joi.string()
+        .regex(/^(?!\/opt\/mount\/|.\/|\/).*/)
+        .required(),
       positions: Joi.object().keys({
         begin: Joi.object()
           .keys({

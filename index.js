@@ -31,7 +31,7 @@ const dependenciesSchema = Joi.object()
 const sourceCodeSchema = Joi.object()
   .keys({
     type: Joi.string().required(),
-    process: processSchema,
+    process: processSchema.required(),
     rule: Joi.string().required(),
     description: Joi.string().required(),
     // cvss_score: Joi.number().required(),

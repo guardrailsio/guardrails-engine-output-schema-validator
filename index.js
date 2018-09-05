@@ -17,47 +17,32 @@ const processSchema = Joi.object().keys({
   version: Joi.string().required()
 });
 
-const dependenciesSchema = Joi.object()
-  .keys({
-    type: Joi.string().required(),
-    cvss_score: Joi.number().required(),
-    module: Joi.string().required(),
-    version: Joi.string().required(),
-    vulnerable_versions: Joi.string().required(),
-    process: processSchema
-  })
-  .options({ stripUnknown: true });
-
-const sourceCodeSchema = Joi.object()
-  .keys({
-    type: Joi.string().required(),
-    process: processSchema.required(),
-    rule: Joi.string().required(),
-    description: Joi.string().required(),
-    // cvss_score: Joi.number().required(),
-    location: Joi.object().keys({
-      path: Joi.string()
-        .regex(/^(?!\/opt\/mount\/|.\/|\/).*/)
+const lineitemSchema = Joi.object().keys({
+  type: Joi.string().required(),
+  ruleId: Joi.string().required(),
+  location: Joi.object().keys({
+    path: Joi.string()
+      .regex(/^(?!\/opt\/mount\/|.\/|\/).*/)
+      .required(),
+    positions: Joi.object().keys({
+      begin: Joi.object()
+        .keys({
+          line: Joi.number(),
+          column: Joi.number().optional()
+        })
         .required(),
-      positions: Joi.object().keys({
-        begin: Joi.object()
-          .keys({
-            line: Joi.number(),
-            column: Joi.number().optional()
-          })
-          .required(),
-        end: Joi.object()
-          .keys({
-            line: Joi.number(),
-            column: Joi.number().optional()
-          })
-          .optional()
-      })
+      end: Joi.object()
+        .keys({
+          line: Joi.number(),
+          column: Joi.number().optional()
+        })
+        .optional()
     })
-  })
-  .options({ stripUnknown: true });
+  }),
+  metadata: Joi.object().required()
+});
 
-const baseSchema = Joi.object().keys({
+const envelopeSchema = Joi.object().keys({
   engine: Joi.object()
     .keys({
       name: Joi.string().required(),
@@ -65,9 +50,8 @@ const baseSchema = Joi.object().keys({
     })
     .required(),
   language: Joi.string()
-    .valid("javascript", "python", "ruby", "mixed")
+    .valid("javascript", "python", "ruby", "go", "solidity")
     .required(),
-  type: Joi.string().required(),
   status: Joi.string()
     .valid("success", "failure")
     .required(),
@@ -75,7 +59,8 @@ const baseSchema = Joi.object().keys({
   issues: Joi.number().required(),
   errors: [Joi.array(), null],
   output: Joi.array().required(),
-  rawOutput: Joi.string().required()
+  rawOutput: [Joi.string().required(), Joi.object().required()],
+  process: processSchema
 });
 
 /* data loading */
@@ -107,8 +92,7 @@ if (!reportData) {
 }
 
 /* validating the envelope structure */
-
-Joi.validate(reportData, baseSchema, (err, value) => {
+Joi.validate(reportData, envelopeSchema, (err, value) => {
   if (err) {
     console.log(err);
   } else {
@@ -118,13 +102,7 @@ Joi.validate(reportData, baseSchema, (err, value) => {
 
 /* validating the line items */
 reportData.output.forEach(lineItem => {
-  let schema = Joi.object();
-  if (lineItem.type === "issue" || lineItem.type === "sourcecode") {
-    schema = sourceCodeSchema;
-  } else if (lineItem.type === "advisory") {
-    schema = dependenciesSchema;
-  } else if (lineItem.type === "secrets") {
-  }
+  let schema = lineitemSchema;
   Joi.validate(lineItem, schema, (err, value) => {
     if (err) {
       console.log(err);

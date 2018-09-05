@@ -1,0 +1,19 @@
+# Use Dockerized infrastructure
+sudo: false
+language: node_js
+node_js:
+  - "10"
+
+before_install:
+  - npm install -g npm@latest
+  - npm install semantic-release@latest
+
+install:
+  - npm install
+
+# Trigger a push build on master and guardrails branches + PRs build on every branches
+# Avoid double build on PRs (See https://github.com/travis-ci/travis-ci/issues/1147)
+branches:
+  only:
+    - master
+    - develop

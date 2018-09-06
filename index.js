@@ -75,7 +75,7 @@ const baseSchema = Joi.object().keys({
   issues: Joi.number().required(),
   errors: [Joi.array(), null],
   output: Joi.array().required(),
-  rawOutput: Joi.string().required()
+  rawOutput: [Joi.string().required(), Joi.object().required()]
 });
 
 /* data loading */

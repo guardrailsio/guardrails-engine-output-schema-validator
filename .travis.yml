@@ -9,7 +9,13 @@ before_install:
   - npm install semantic-release@latest
 
 install:
-  - npm install
+  - npm ci
+
+script:
+  - npm run test
+
+after_success:
+  - npm run semantic-release
 
 # Trigger a push build on master and guardrails branches + PRs build on every branches
 # Avoid double build on PRs (See https://github.com/travis-ci/travis-ci/issues/1147)
@@ -17,3 +23,4 @@ branches:
   only:
     - master
     - develop
+

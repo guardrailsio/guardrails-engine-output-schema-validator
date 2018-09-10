@@ -63,6 +63,16 @@ const envelopeSchema = Joi.object().keys({
   process: processSchema
 });
 
+const metadataSchemaSAST = Joi.object().keys({
+  lineContent: Joi.string().required(),
+  confidence: Joi.string().optional(),
+  severity: Joi.string().optional(),
+  description: Joi.string().optional(),
+  title: Joi.string().optional(),
+  cweID: Joi.string().optional(),
+  references: Joi.array().optional()
+});
+const metadataSchemaSCA = Joi.object().keys({});
 /* data loading */
 
 function readFromStdin() {
@@ -102,12 +112,25 @@ Joi.validate(reportData, envelopeSchema, (err, value) => {
 
 /* validating the line items */
 reportData.output.forEach(lineItem => {
-  let schema = lineitemSchema;
-  Joi.validate(lineItem, schema, (err, value) => {
+  Joi.validate(lineItem, lineitemSchema, (err, value) => {
     if (err) {
       console.log(err);
     } else {
       console.log(lineItem.type + "  ✅");
+    }
+  });
+  let metadataSchema;
+  if (lineItem.type == "issue" || lineItem.type == "secret") {
+    metadataSchema = metadataSchemaSAST;
+  } else if (lineItem.type == "advisory") {
+    metadataSchema = metadataSchemaSCA;
+  }
+
+  Joi.validate(lineItem.metadata, metadataSchema, (err, value) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.log(lineItem.type + " metadata  ✅");
     }
   });
 });

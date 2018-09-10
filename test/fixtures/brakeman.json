@@ -29,7 +29,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/unsafe_deserialization"
         ],
-        "confidence": "Medium"
+        "confidence": "Medium",
+        "lineContent": "sometext"
       }
     },
     {
@@ -49,7 +50,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/sql_injection/"
         ],
-        "confidence": "Medium"
+        "confidence": "Medium",
+        "lineContent": "sometext"
       }
     },
     {
@@ -69,7 +71,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/dangerous_send/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -89,7 +92,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/session_setting/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -109,7 +113,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/cross-site_request_forgery/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -129,7 +134,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/session_setting/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -149,7 +155,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/session_setting/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -169,7 +176,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/remote_code_execution/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -189,7 +197,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/mass_assignment/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -209,7 +218,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/sql_injection/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -229,7 +239,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/mass_assignment/"
         ],
-        "confidence": "Medium"
+        "confidence": "Medium",
+        "lineContent": "sometext"
       }
     },
     {
@@ -249,7 +260,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/format_validation/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -269,7 +281,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/command_injection/"
         ],
-        "confidence": "Medium"
+        "confidence": "Medium",
+        "lineContent": "sometext"
       }
     },
     {
@@ -289,7 +302,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/remote_code_execution/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -309,7 +323,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/file_access/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -329,7 +344,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/cross-site_scripting/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     },
     {
@@ -349,7 +365,8 @@
         "references": [
           "https://brakemanscanner.org/docs/warning_types/remote_code_execution/"
         ],
-        "confidence": "High"
+        "confidence": "High",
+        "lineContent": "sometext"
       }
     }
   ],

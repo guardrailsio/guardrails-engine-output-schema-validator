@@ -18,7 +18,9 @@ const processSchema = Joi.object().keys({
 });
 
 const lineitemSchema = Joi.object().keys({
-  type: Joi.string().required(),
+  type: Joi.string()
+    .required()
+    .valid("sast", "sca", "secret"),
   ruleId: Joi.string().required(),
   location: Joi.object().keys({
     path: Joi.string()
@@ -120,9 +122,9 @@ reportData.output.forEach(lineItem => {
     }
   });
   let metadataSchema;
-  if (lineItem.type == "issue" || lineItem.type == "secret") {
+  if (lineItem.type == "sast" || lineItem.type == "secret") {
     metadataSchema = metadataSchemaSAST;
-  } else if (lineItem.type == "advisory") {
+  } else if (lineItem.type == "sca") {
     metadataSchema = metadataSchemaSCA;
   }
 

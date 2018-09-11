@@ -21,9 +21,11 @@
   "release": {
     "verifyConditions": [
       "@semantic-release/git",
-      "@semantic-release/github"
+      "@semantic-release/github",
+      "@semantic-release/npm"
     ],
     "prepare": [
+      "@semantic-release/npm",
       {
         "path": "@semantic-release/git",
         "assets": [
@@ -34,7 +36,8 @@
       }
     ],
     "publish": [
-      "@semantic-release/github"
+      "@semantic-release/github",
+      "@semantic-release/npm"
     ]
   }
 }

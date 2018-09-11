@@ -13,7 +13,7 @@
   },
   "output": [
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "25",
       "location": {
         "path": "app/controllers/password_resets_controller.rb",
@@ -34,7 +34,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "0",
       "location": {
         "path": "app/models/analytics.rb",
@@ -55,7 +55,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "23",
       "location": {
         "path": "app/controllers/dashboard_controller.rb",
@@ -76,7 +76,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "26",
       "location": {
         "path": "config/initializers/session_store.rb",
@@ -97,7 +97,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "7",
       "location": {
         "path": "app/controllers/application_controller.rb",
@@ -118,7 +118,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "29",
       "location": {
         "path": "config/initializers/secret_token.rb",
@@ -139,7 +139,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "29",
       "location": {
         "path": "config/initializers/secret_token.rb",
@@ -160,7 +160,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "24",
       "location": {
         "path": "app/controllers/api/v1/mobile_controller.rb",
@@ -181,7 +181,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "105",
       "location": {
         "path": "app/controllers/users_controller.rb",
@@ -202,7 +202,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "0",
       "location": {
         "path": "app/controllers/users_controller.rb",
@@ -223,7 +223,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "70",
       "location": {
         "path": "app/controllers/users_controller.rb",
@@ -244,7 +244,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "30",
       "location": {
         "path": "app/models/user.rb",
@@ -265,7 +265,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "14",
       "location": {
         "path": "app/models/benefits.rb",
@@ -286,7 +286,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "24",
       "location": {
         "path": "app/controllers/api/v1/mobile_controller.rb",
@@ -307,7 +307,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "16",
       "location": {
         "path": "app/controllers/benefit_forms_controller.rb",
@@ -328,7 +328,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "2",
       "location": {
         "path": "app/views/layouts/application.html.erb",
@@ -349,7 +349,7 @@
       }
     },
     {
-      "type": "issue",
+      "type": "sast",
       "ruleId": "24",
       "location": {
         "path": "app/controllers/benefit_forms_controller.rb",

@@ -60,7 +60,7 @@ const envelopeSchema = Joi.object().keys({
   errors: [Joi.array(), null],
   output: Joi.array().required(),
   rawOutput: [Joi.string().required(), Joi.object().required()],
-  process: processSchema
+  process: processSchema.required()
 });
 
 const metadataSchemaSAST = Joi.object().keys({

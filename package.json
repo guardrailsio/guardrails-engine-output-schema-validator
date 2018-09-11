@@ -1,6 +1,5 @@
 {
   "name": "@guardrails/guardrails-engine-output-schema-validator",
-  "private": true,
   "version": "1.0.1",
   "description": "validate the output of engines",
   "main": "index.js",

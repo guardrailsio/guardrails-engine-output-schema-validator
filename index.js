@@ -65,16 +65,31 @@ const envelopeSchema = Joi.object().keys({
   process: processSchema.required()
 });
 
-const metadataSchemaSAST = Joi.object().keys({
-  lineContent: Joi.string().required(),
-  confidence: Joi.string().optional(),
-  severity: Joi.string().optional(),
-  description: Joi.string().optional(),
-  title: Joi.string().optional(),
-  cweID: Joi.string().optional(),
-  references: Joi.array().optional()
-});
-const metadataSchemaSCA = Joi.object().keys({});
+const metadataSchemaSAST = Joi.object()
+  .keys({
+    lineContent: Joi.string().required(),
+    confidence: Joi.string().optional(),
+    severity: Joi.string().optional(),
+    description: Joi.string().optional(),
+    title: Joi.string().optional(),
+    cweID: Joi.string().optional(),
+    references: Joi.array().optional()
+  })
+  .options({ stripUnknown: true });
+
+const metadataSchemaSCA = Joi.object()
+  .keys({
+    cweID: Joi.string().optional(),
+    cve: Joi.object().optional(),
+    title: Joi.string().optional(),
+    vulnerableVersions: Joi.string().optional(),
+    patchedVersions: Joi.string().optional(),
+    currentVersion: Joi.string().optional(),
+    references: Joi.array().optional(),
+    severity: Joi.string().optional(),
+    dependencyName: Joi.string().optional()
+  })
+  .options({ stripUnknown: true });
 /* data loading */
 
 function readFromStdin() {

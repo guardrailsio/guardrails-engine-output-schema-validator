@@ -52,7 +52,7 @@ const envelopeSchema = Joi.object().keys({
     })
     .required(),
   language: Joi.string()
-    .valid("javascript", "python", "ruby", "go", "solidity", "general")
+    .valid("javascript", "python", "ruby", "go", "solidity", "php", "general")
     .required(),
   status: Joi.string()
     .valid("success", "failure")

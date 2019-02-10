@@ -52,7 +52,7 @@ const envelopeSchema = Joi.object().keys({
     })
     .required(),
   language: Joi.string()
-    .valid("javascript", "python", "ruby", "go", "solidity", "general", "php","java", "dotnet")
+    .valid("javascript", "python", "ruby", "go", "solidity", "general", "php", "java", "dotnet")
     .required(),
   status: Joi.string()
     .valid("success", "failure")
@@ -82,8 +82,8 @@ const metadataSchemaSCA = Joi.object()
     cweID: Joi.string().optional(),
     cve: Joi.object().optional(),
     title: Joi.string().optional(),
-    vulnerableVersions: Joi.string().optional(),
-    patchedVersions: Joi.string().optional(),
+    vulnerableVersions: Joi.string().allow('').optional(),
+    patchedVersions: Joi.string().allow('').optional(),
     currentVersion: Joi.string().optional(),
     references: Joi.array().optional(),
     severity: Joi.string().optional(),

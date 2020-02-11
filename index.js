@@ -47,7 +47,9 @@ const lineitemSchema = Joi.object().keys({
 const envelopeSchema = Joi.object().keys({
   engine: Joi.object()
     .keys({
-      name: Joi.string().required(),
+      name: Joi.string()
+      .regex(/guardrails\-engine\-\w+?\-\w+/)
+      .required(),
       version: Joi.string().required()
     })
     .required(),

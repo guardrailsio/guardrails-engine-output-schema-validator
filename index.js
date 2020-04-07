@@ -57,7 +57,7 @@ const envelopeSchema = Joi.object().keys({
     .valid("javascript", "python", "ruby", "go", "solidity", "general", "php", "java", "dotnet", "elixir", "c", "rust", "terraform", "typescript")
     .required(),
   status: Joi.string()
-    .valid("success", "failure")
+    .valid("success", "error", "unsuccessful")
     .required(),
   executionTime: Joi.number().required(),
   issues: Joi.number().required(),

@@ -1,0 +1,226 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"$id": "http://example.com/example.json",
+	"type": "object",
+	"title": "GuardRails Engines root schema",
+	"description": "This jsonschema is to validate and standardize all engine outputs.",
+	"required": [
+		"engine",
+		"language",
+		"status",
+		"executionTime",
+		"issues",
+		"process",
+		"output"
+	],
+	"properties": {
+		"engine": {
+			"$id": "#/properties/engine",
+			"type": "object",
+			"title": "The engine schema",
+			"description": "An explanation about the purpose of this instance.",
+			"default": {},
+			"examples": [{
+				"name": "@guardrails/guardrails-engine-typescript-tslint",
+				"version": "1.0.0"
+			}],
+			"required": ["name", "version"],
+			"properties": {
+				"name": {
+					"$id": "#/properties/engine/properties/name",
+					"type": "string",
+					"pattern": "^@guardrails/guardrails-engine-.*$",
+					"title": "The name schema",
+					"description": "An explanation about the purpose of this instance.",
+					"examples": [
+						"@guardrails/guardrails-engine-typescript-tslint"
+					]
+				},
+				"version": {
+					"$id": "#/properties/engine/properties/version",
+					"type": "string",
+					"title": "The version schema",
+					"description": "Version number of the engine"
+				}
+			}
+		},
+		"language": {
+			"$id": "#/properties/language",
+			"type": "string",
+			"enum": ["c", "ruby", "php", "python", "solidity", "elixir", "rust", "terraform", "mobile", "go", "java", "javascript", "kubernetes", "general", "typescript"],
+			"title": "The language schema",
+			"description": "Main engine lanaguage"
+		},
+		"status": {
+			"$id": "#/properties/status",
+			"type": "string",
+			"enum": ["success", "completed", "errror"],
+			"title": "The status schema",
+			"description": "An explanation about the purpose of this instance."
+		},
+		"executionTime": {
+			"$id": "#/properties/executionTime",
+			"type": "integer",
+			"title": "The executionTime schema",
+			"description": "Execution time of engine",
+			"default": 0
+		},
+		"issues": {
+			"$id": "#/properties/issues",
+			"type": "integer",
+			"title": "The issues schema",
+			"description": "Number of issues reported",
+			"default": 0
+		},
+		"process": {
+			"$id": "#/properties/process",
+			"type": "object",
+			"title": "The process schema",
+			"description": "An explanation about the purpose of this instance.",
+			"required": ["name", "version"],
+			"properties": {
+				"name": {
+					"$id": "#/properties/process/properties/name",
+					"type": "string",
+					"title": "The name schema",
+					"description": "An explanation about the purpose of this instance."
+				},
+				"version": {
+					"$id": "#/properties/process/properties/version",
+					"type": "string",
+					"title": "The version schema",
+					"description": "An explanation about the purpose of this instance."
+				}
+			}
+		},
+		"output": {
+			"$id": "#/properties/output",
+			"type": "array",
+			"title": "The output schema",
+			"description": "An explanation about the purpose of this instance.",
+			"items": {
+				"allOf": [{
+					"$id": "#/properties/output/items/allOf/0",
+					"type": "object",
+					"title": "The first allOf schema",
+					"description": "An explanation about the purpose of this instance.",
+					"required": ["type", "ruleId", "location", "metadata"],
+					"if": {
+						"properties": {
+							"type": {
+								"const": "sca"
+							}
+						}
+					},
+					"then": {
+						"properties": {
+							"metadata": {
+								"required": ["title"]
+							}
+						}
+					},
+					"properties": {
+						"type": {
+							"$id": "#/properties/output/items/allOf/0/properties/type",
+							"type": "string",
+							"enum": ["sast", "sca"],
+							"title": "The type schema",
+							"description": "Type of engine"
+						},
+						"ruleId": {
+							"$id": "#/properties/output/items/allOf/0/properties/ruleId",
+							"type": "string",
+							"title": "The ruleId schema",
+							"description": "An explanation about the purpose of this instance."
+						},
+						"location": {
+							"$id": "#/properties/output/items/allOf/0/properties/location",
+							"type": "object",
+							"title": "The location schema",
+							"description": "Location details of the issue.",
+							"required": ["path", "positions"],
+							"properties": {
+								"path": {
+									"$id": "#/properties/output/items/allOf/0/properties/location/properties/path",
+									"type": "string",
+									"pattern": "^(?!\/opt\/mount).*$",
+									"title": "The path schema",
+									"description": "Path to the affected file. Path should not start with /opt/mount"
+								},
+								"positions": {
+									"$id": "#/properties/output/items/allOf/0/properties/location/properties/positions",
+									"type": "object",
+									"title": "The positions schema",
+									"description": "An explanation about the purpose of this instance.",
+									"required": ["begin"],
+									"properties": {
+										"begin": {
+											"$id": "#/properties/output/items/allOf/0/properties/location/properties/positions/properties/begin",
+											"type": "object",
+											"title": "The begin schema",
+											"description": "An explanation about the purpose of this instance.",
+											"required": ["line"],
+											"properties": {
+												"line": {
+													"$id": "#/properties/output/items/allOf/0/properties/location/properties/positions/properties/begin/properties/line",
+													"type": "integer",
+													"title": "The line schema",
+													"description": "An explanation about the purpose of this instance.",
+													"default": 0
+												}
+											}
+										},
+										"end": {
+											"$id": "#/properties/output/items/allOf/0/properties/location/properties/positions/properties/end",
+											"type": "object",
+											"title": "The end schema",
+											"description": "An explanation about the purpose of this instance.",
+											"required": ["line"],
+											"properties": {
+												"line": {
+													"$id": "#/properties/output/items/allOf/0/properties/location/properties/positions/properties/begin/properties/line",
+													"type": "integer",
+													"title": "The line schema",
+													"description": "An explanation about the purpose of this instance.",
+													"default": 0
+												}
+											}
+										}
+									}
+								}
+							}
+						},
+						"metadata": {
+							"$id": "#/properties/output/items/allOf/0/properties/metadata",
+							"type": "object",
+							"title": "The metadata schema",
+							"description": "An explanation about the purpose of this instance.",
+							"required": ["description"],
+							"properties": {
+								"title": {
+									"$id": "#/properties/output/items/allOf/0/properties/metadata/properties/title",
+									"type": "string",
+									"title": "The title schema",
+									"description": "An explanation about the purpose of this instance."
+								},
+								"description": {
+									"$id": "#/properties/output/items/allOf/0/properties/metadata/properties/description",
+									"type": "string",
+									"title": "The description schema",
+									"description": "An explanation about the purpose of this instance."
+								},
+								"lineContent": {
+									"$id": "#/properties/output/items/allOf/0/properties/metadata/properties/lineContent",
+									"type": "string",
+									"title": "The lineContent schema",
+									"description": "An explanation about the purpose of this instance."
+								}
+							}
+						}
+					}
+				}],
+				"$id": "#/properties/output/items"
+			}
+		}
+	}
+}

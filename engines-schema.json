@@ -56,7 +56,7 @@
 			"type": "string",
 			"enum": ["success", "completed", "errror"],
 			"title": "The status schema",
-			"description": "An explanation about the purpose of this instance."
+			"description": "Success: complete with results. Completed: Engine ran with no results. Error: engine errored out due to something"
 		},
 		"executionTime": {
 			"$id": "#/properties/executionTime",

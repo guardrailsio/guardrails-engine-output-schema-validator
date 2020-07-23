@@ -18,9 +18,7 @@ const processSchema = Joi.object().keys({
 });
 
 const lineitemSchema = Joi.object().keys({
-  type: Joi.string()
-    .required()
-    .valid("sast", "sca", "secret"),
+  type: Joi.string().required().valid("sast", "sca", "secret"),
   ruleId: Joi.string().required(),
   location: Joi.object().keys({
     path: Joi.string()
@@ -48,17 +46,32 @@ const envelopeSchema = Joi.object().keys({
   engine: Joi.object()
     .keys({
       name: Joi.string()
-      .regex(/guardrails\-engine\-\w+?\-\w+/)
-      .required(),
+        .regex(/guardrails\-engine\-\w+?\-\w+/)
+        .required(),
       version: Joi.string().required()
     })
     .required(),
   language: Joi.string()
-    .valid("javascript", "python", "ruby", "go", "solidity", "general", "php", "java", "dotnet", "elixir", "c", "rust", "terraform", "typescript")
+    .valid(
+      "javascript",
+      "python",
+      "ruby",
+      "go",
+      "solidity",
+      "general",
+      "php",
+      "java",
+      "dotnet",
+      "elixir",
+      "c",
+      "rust",
+      "terraform",
+      "typescript",
+      "apex",
+      "mobile"
+    )
     .required(),
-  status: Joi.string()
-    .valid("success", "error", "unsuccessful")
-    .required(),
+  status: Joi.string().valid("success", "error", "unsuccessful").required(),
   executionTime: Joi.number().required(),
   issues: Joi.number().required(),
   errors: [Joi.array(), null],
@@ -84,8 +97,8 @@ const metadataSchemaSCA = Joi.object()
     cweID: Joi.string().optional(),
     cve: Joi.object().optional(),
     title: Joi.string().optional(),
-    vulnerableVersions: Joi.string().allow('').optional(),
-    patchedVersions: Joi.string().allow('').optional(),
+    vulnerableVersions: Joi.string().allow("").optional(),
+    patchedVersions: Joi.string().allow("").optional(),
     currentVersion: Joi.string().optional(),
     references: Joi.array().optional(),
     severity: Joi.string().optional(),
@@ -130,7 +143,7 @@ Joi.validate(reportData, envelopeSchema, (err, value) => {
 });
 
 /* validating the line items */
-reportData.output.forEach(lineItem => {
+reportData.output.forEach((lineItem) => {
   Joi.validate(lineItem, lineitemSchema, (err, value) => {
     if (err) {
       console.log(err);

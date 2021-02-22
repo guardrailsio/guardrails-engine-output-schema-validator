@@ -21,7 +21,7 @@ const lineitemSchema = Joi.object().keys({
   type: Joi.string().required().valid("sast", "sca", "secret", "dast"),
   ruleId: Joi.string().required(),
 
-  location: Joi.alternatives().when("type", {
+  location: Joi.alternatives().conditional("type", {
     is: "dast",
     then: Joi.array().min(1).items(Joi.object().keys({
       path: Joi.string().uri({ scheme: ["http", "https"] }).required(),
@@ -159,35 +159,11 @@ if (!reportData) {
 }
 
 /* validating the envelope structure */
-Joi.validate(reportData, envelopeSchema, (err, value) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("envelope  ✅");
-  }
-});
+console.log(envelopeSchema.validate(reportData).error ?? "envelope  ✅");
 
 /* validating the line items */
 reportData.output.forEach((lineItem) => {
-  Joi.validate(lineItem, lineitemSchema, (err, value) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(lineItem.type + "  ✅");
-    }
-  });
-  const metadataSchema = {
-    sast: metadataSchemaSAST,
-    secret: metadataSchemaSAST,
-    sca: metadataSchemaSCA,
-    dast: metadataSchemaDAST
-  }[lineItem.type];
-
-  Joi.validate(lineItem.metadata, metadataSchema, (err, value) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(lineItem.type + " metadata  ✅");
-    }
-  });
+  console.log(lineitemSchema.validate(lineItem).error ?? lineItem.type + "  ✅");
+  const metadataSchema = { sast: metadataSchemaSAST, secret: metadataSchemaSAST, sca: metadataSchemaSCA, dast: metadataSchemaDAST }[lineItem.type];
+  console.log(metadataSchema.validate(lineItem.metadata).error ?? lineItem.type + " metadata  ✅");
 });

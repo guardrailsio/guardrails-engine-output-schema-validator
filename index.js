@@ -145,13 +145,11 @@ function readFromFile(filePath) {
     process.exit(1);
   }
 }
-let reportData;
 
-if (program.stdin) {
-  reportData = readFromStdin();
-} else if (program.file) {
-  reportData = readFromFile(program.file);
-}
+const reportData = {
+  stdin: readFromStdin,
+  file: readFromFile
+}[(program.opts().stdin && 'stdin') || (program.opts().file && 'file')](program.opts().file);
 
 if (!reportData) {
   console.log("No data was supplied to validate. Run `-h` for help.");

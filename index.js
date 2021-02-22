@@ -18,25 +18,36 @@ const processSchema = Joi.object().keys({
 });
 
 const lineitemSchema = Joi.object().keys({
-  type: Joi.string().required().valid("sast", "sca", "secret"),
+  type: Joi.string().required().valid("sast", "sca", "secret", "dast"),
   ruleId: Joi.string().required(),
-  location: Joi.object().keys({
-    path: Joi.string()
-      .regex(/^(?!\/opt\/mount\/|.\/|\/).*/)
-      .required(),
-    positions: Joi.object().keys({
-      begin: Joi.object()
-        .keys({
-          line: Joi.number(),
-          column: Joi.number().optional()
-        })
+
+  location: Joi.alternatives().when("type", {
+    is: "dast",
+    then: Joi.array().min(1).items(Joi.object().keys({
+      path: Joi.string().uri({ scheme: ["http", "https"] }).required(),
+      method: Joi.string().valid("GET", "POST", "PUT", "DELETE").required(),
+      evidence: Joi.string(),
+      param: Joi.string(),
+      attack: Joi.string()
+    })),
+    otherwise: Joi.object().keys({
+      path: Joi.string()
+        .regex(/^(?!\/opt\/mount\/|.\/|\/).*/)
         .required(),
-      end: Joi.object()
-        .keys({
-          line: Joi.number(),
-          column: Joi.number().optional()
-        })
-        .optional()
+      positions: Joi.object().keys({
+        begin: Joi.object()
+          .keys({
+            line: Joi.number(),
+            column: Joi.number().optional()
+          })
+          .required(),
+        end: Joi.object()
+          .keys({
+            line: Joi.number(),
+            column: Joi.number().optional()
+          })
+          .optional()
+      })
     })
   }),
   metadata: Joi.object().required()
@@ -77,7 +88,8 @@ const envelopeSchema = Joi.object().keys({
   errors: [Joi.array(), null],
   output: Joi.array().required(),
   rawOutput: [Joi.string().required(), Joi.object().required()],
-  process: processSchema.required()
+  process: processSchema.required(),
+  sutUrl: Joi.string().uri({ scheme: ["http", "https"] })
 });
 
 const metadataSchemaSAST = Joi.object()
@@ -103,6 +115,19 @@ const metadataSchemaSCA = Joi.object()
     references: Joi.array().optional(),
     severity: Joi.string().optional(),
     dependencyName: Joi.string().optional()
+  })
+  .options({ stripUnknown: true });
+
+const metadataSchemaDAST = Joi.object()
+  .keys({
+    riskcode: Joi.number().integer().min(0).max(3).required(),
+    confidence: Joi.number().integer().min(0).max(3).required(),
+    desc: Joi.string().required(),
+    solution: Joi.string().required(),
+    otherinfo: Joi.string().optional(),
+    reference: Joi.string().optional(),
+    cweid: Joi.number().integer().positive().optional(),
+    wascid: Joi.number().integer().positive().optional()
   })
   .options({ stripUnknown: true });
 /* data loading */
@@ -151,12 +176,12 @@ reportData.output.forEach((lineItem) => {
       console.log(lineItem.type + "  ✅");
     }
   });
-  let metadataSchema;
-  if (lineItem.type == "sast" || lineItem.type == "secret") {
-    metadataSchema = metadataSchemaSAST;
-  } else if (lineItem.type == "sca") {
-    metadataSchema = metadataSchemaSCA;
-  }
+  const metadataSchema = {
+    sast: metadataSchemaSAST,
+    secret: metadataSchemaSAST,
+    sca: metadataSchemaSCA,
+    dast: metadataSchemaDAST
+  }[lineItem.type];
 
   Joi.validate(lineItem.metadata, metadataSchema, (err, value) => {
     if (err) {

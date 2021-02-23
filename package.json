@@ -4,40 +4,14 @@
   "description": "validate the output of engines",
   "main": "index.js",
   "scripts": {
-    "test": "sh test/test.sh",
-    "semantic-release": "semantic-release"
+    "test": "sh test/test.sh"
   },
   "preferGlobal": true,
   "bin": "bin/validator",
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@semantic-release/git": "^9.0.0",
     "commander": "^7.1.0",
-    "joi": "^17.4.0",
-    "semantic-release": "^17.3.9"
-  },
-  "release": {
-    "npmPublish": true,
-    "verifyConditions": [
-      "@semantic-release/git",
-      "@semantic-release/github",
-      "@semantic-release/npm"
-    ],
-    "prepare": [
-      "@semantic-release/npm",
-      {
-        "path": "@semantic-release/git",
-        "assets": [
-          "package.json",
-          "package-lock.json"
-        ],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
-      }
-    ],
-    "publish": [
-      "@semantic-release/github",
-      "@semantic-release/npm"
-    ]
+    "joi": "^17.4.0"
   }
 }

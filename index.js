@@ -18,25 +18,36 @@ const processSchema = Joi.object().keys({
 });
 
 const lineitemSchema = Joi.object().keys({
-  type: Joi.string().required().valid("sast", "sca", "secret"),
+  type: Joi.string().required().valid("sast", "sca", "secret", "dast"),
   ruleId: Joi.string().required(),
-  location: Joi.object().keys({
-    path: Joi.string()
-      .regex(/^(?!\/opt\/mount\/|.\/|\/).*/)
-      .required(),
-    positions: Joi.object().keys({
-      begin: Joi.object()
-        .keys({
-          line: Joi.number(),
-          column: Joi.number().optional()
-        })
+
+  location: Joi.alternatives().conditional("type", {
+    is: "dast",
+    then: Joi.array().min(1).items(Joi.object().keys({
+      path: Joi.string().uri({ scheme: ["http", "https"] }).required(),
+      method: Joi.string().valid("GET", "POST", "PUT", "DELETE").required(),
+      evidence: Joi.string(),
+      param: Joi.string(),
+      attack: Joi.string()
+    })),
+    otherwise: Joi.object().keys({
+      path: Joi.string()
+        .regex(/^(?!\/opt\/mount\/|.\/|\/).*/)
         .required(),
-      end: Joi.object()
-        .keys({
-          line: Joi.number(),
-          column: Joi.number().optional()
-        })
-        .optional()
+      positions: Joi.object().keys({
+        begin: Joi.object()
+          .keys({
+            line: Joi.number(),
+            column: Joi.number().optional()
+          })
+          .required(),
+        end: Joi.object()
+          .keys({
+            line: Joi.number(),
+            column: Joi.number().optional()
+          })
+          .optional()
+      })
     })
   }),
   metadata: Joi.object().required()
@@ -77,7 +88,8 @@ const envelopeSchema = Joi.object().keys({
   errors: [Joi.array(), null],
   output: Joi.array().required(),
   rawOutput: [Joi.string().required(), Joi.object().required()],
-  process: processSchema.required()
+  process: processSchema.required(),
+  sutUrl: Joi.string().uri({ scheme: ["http", "https"] })
 });
 
 const metadataSchemaSAST = Joi.object()
@@ -105,6 +117,19 @@ const metadataSchemaSCA = Joi.object()
     dependencyName: Joi.string().optional()
   })
   .options({ stripUnknown: true });
+
+const metadataSchemaDAST = Joi.object()
+  .keys({
+    riskcode: Joi.number().integer().min(0).max(3).required(),
+    confidence: Joi.number().integer().min(0).max(3).required(),
+    desc: Joi.string().required(),
+    solution: Joi.string().required(),
+    otherinfo: Joi.string().optional(),
+    reference: Joi.string().optional(),
+    cweid: Joi.number().integer().positive().optional(),
+    wascid: Joi.number().integer().positive().optional()
+  })
+  .options({ stripUnknown: true });
 /* data loading */
 
 function readFromStdin() {
@@ -120,13 +145,11 @@ function readFromFile(filePath) {
     process.exit(1);
   }
 }
-let reportData;
 
-if (program.stdin) {
-  reportData = readFromStdin();
-} else if (program.file) {
-  reportData = readFromFile(program.file);
-}
+const reportData = {
+  stdin: readFromStdin,
+  file: readFromFile
+}[(program.opts().stdin && 'stdin') || (program.opts().file && 'file')](program.opts().file);
 
 if (!reportData) {
   console.log("No data was supplied to validate. Run `-h` for help.");
@@ -134,35 +157,11 @@ if (!reportData) {
 }
 
 /* validating the envelope structure */
-Joi.validate(reportData, envelopeSchema, (err, value) => {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("envelope  ✅");
-  }
-});
+console.log(envelopeSchema.validate(reportData).error ?? "envelope  ✅");
 
 /* validating the line items */
 reportData.output.forEach((lineItem) => {
-  Joi.validate(lineItem, lineitemSchema, (err, value) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(lineItem.type + "  ✅");
-    }
-  });
-  let metadataSchema;
-  if (lineItem.type == "sast" || lineItem.type == "secret") {
-    metadataSchema = metadataSchemaSAST;
-  } else if (lineItem.type == "sca") {
-    metadataSchema = metadataSchemaSCA;
-  }
-
-  Joi.validate(lineItem.metadata, metadataSchema, (err, value) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log(lineItem.type + " metadata  ✅");
-    }
-  });
+  console.log(lineitemSchema.validate(lineItem).error ?? lineItem.type + "  ✅");
+  const metadataSchema = { sast: metadataSchemaSAST, secret: metadataSchemaSAST, sca: metadataSchemaSCA, dast: metadataSchemaDAST }[lineItem.type];
+  console.log(metadataSchema.validate(lineItem.metadata).error ?? lineItem.type + " metadata  ✅");
 });

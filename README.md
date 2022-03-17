@@ -2,6 +2,17 @@
 
 This tool allows you to test your output of an engine against our internal schemas.
 
+## Install
+
+Clone:
+`git clone guardrailsio/guardrails-engine-output-schema-validator`
+
+Install dependencies
+`npm install`
+
+Install into system
+`npm link`
+
 ## Usage
 
 ```shell
@@ -64,13 +75,3 @@ In some cases you will run into validation errors. Those look like this:
 
   Usually the validation error is fairly straight forward and gives you enough infos to fix the issue.
 
-## Install
-
-Clone:
-`git clone guardrailsio/guardrails-engine-output-schema-validator`
-
-Install dependencies
-`npm install`
-
-Install into system
-`npm link`

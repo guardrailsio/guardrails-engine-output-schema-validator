@@ -18,7 +18,7 @@ const processSchema = Joi.object().keys({
 });
 
 const lineitemSchema = Joi.object().keys({
-  type: Joi.string().required().valid("sast", "sca", "secret", "dast"),
+  type: Joi.string().required().valid("sast", "secret", "cloud", "sca", "dast"),
   ruleId: Joi.string().required(),
 
   location: Joi.alternatives().conditional("type", {
@@ -162,6 +162,6 @@ console.log(envelopeSchema.validate(reportData).error ?? "envelope  ✅");
 /* validating the line items */
 reportData.output.forEach((lineItem) => {
   console.log(lineitemSchema.validate(lineItem).error ?? lineItem.type + "  ✅");
-  const metadataSchema = { sast: metadataSchemaSAST, secret: metadataSchemaSAST, sca: metadataSchemaSCA, dast: metadataSchemaDAST }[lineItem.type];
+  const metadataSchema = { sast: metadataSchemaSAST, secret: metadataSchemaSAST, cloud: metadataSchemaSAST, sca: metadataSchemaSCA, dast: metadataSchemaDAST }[lineItem.type];
   console.log(metadataSchema.validate(lineItem.metadata).error ?? lineItem.type + " metadata  ✅");
 });
